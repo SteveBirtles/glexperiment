@@ -1,17 +1,17 @@
-#version 330 core
-out vec4 fragColor;
+#version 310 es
+out mediump vec4 fragColor;
 
-in vec2 texCoord;
-in vec4 palColour;
-in float light;
-in float fogFactor;
+in mediump vec2 texCoord;
+in mediump vec4 palColour;
+in mediump float light;
+in mediump float fogFactor;
 
 uniform sampler2D textureNo;
-uniform vec4 fogColour = vec4(0.4, 0.4, 0.8, 1.0);
+uniform mediump vec4 fogColour;
 
 void main() {
 
-	vec4 texel = texture(textureNo, texCoord) * palColour;
+	mediump vec4 texel = texture(textureNo, texCoord) * palColour;
 	fragColor = mix(fogColour, texel * light, fogFactor);
 
 }

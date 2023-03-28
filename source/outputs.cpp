@@ -110,10 +110,12 @@ bool Outputs::initOpenGL() {
     return false;
   }
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  
+  glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
 
   window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "GLFW Fun", NULL, NULL);
   if (window == NULL) {
@@ -266,6 +268,8 @@ void Outputs::renderWorld() {
   const float chunkSize = (float)World::MAP_SIZE / World::CHUNKS;
   int camChunkX = (int)(Outputs::cameraPos.x / chunkSize);
   int camChunkZ = (int)(Outputs::cameraPos.z / chunkSize);
+
+  Outputs::mainShader->setVec4("foogColour", 0.4f, 0.4f, 0.8f, 1.0f);
 
   totalTris = 0;
   for (int i = 0; i < 12; i++) {
