@@ -19,6 +19,22 @@ cd ..
 build/main.exe
 ```
 
+## To compile on Linux:
+Tested on Ubuntu & Raspberry Pi OS, please substitue your package manager of choice :)
+```
+sudo apt install libglfw3-dev libxinerama-dev libxcursor-dev 
+sudo apt install cmake 
+```
+### Compile and run:
+```
+mkdir build
+cd build
+cmake ..
+cmake --build .
+cd ..
+build/main
+```
+
 ## To compile on Mac 
 
 ### Prerequesits:
@@ -34,14 +50,7 @@ cd build
 cmake ..
 cmake --build .
 cd ..
-build/main.exe
-```
-
-## To compile on Linux:
-Tested on Ubuntu & Raspberry Pi OS, please substitue your package manager of choice :)
-```
-sudo apt install libglfw3-dev libxinerama-dev libxcursor-dev 
-sudo apt install cmake 
+build/main
 ```
 
 ## Controls:
