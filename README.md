@@ -43,18 +43,15 @@ build/main.exe
 
 ## Controls:
 
-**Mouse** - Look Around
-**Alt + Scroll Wheel** - Zoom
-**WSAD** - Forward, Backwards, Strafe Left, Strafe Right
-**RF** - Fly Up, Fly Down
-
-**Ctrl + M** - Generate Maze
-**Ctrl + F** - Generate Flat Land
-**Ctrl + V** - Load MagicaVoxel File (hard coded to assets/monu1.vox at the moment)
-**Ctrl + R** - Generate Random Spheres
-
-**Shift (Held)** - Show Editing Cursor
-**+ Left Click** - 'Build'
-**+ Right Click** - 'Break'
-
-**Esc** - Save World & Exit
+- **Mouse** - Look Around
+- **Alt + Scroll Wheel** - Zoom
+- **WSAD** - Forward, Backwards, Strafe Left, Strafe Right
+- **RF** - Fly Up, Fly Down
+- **Ctrl + M** - Generate Maze
+- **Ctrl + F** - Generate Flat Land
+- **Ctrl + V** - Load MagicaVoxel File (hard coded to assets/monu1.vox at the moment)
+- **Ctrl + R** - Generate Random Spheres
+-  **Shift (Held)** - Show Editing Cursor
+- **+ Left Click** - 'Build'
+- **+ Right Click** - 'Break' 
+- **Esc** - Save World & Exit
