@@ -38,8 +38,11 @@ build/main.exe
 ```
 
 ## To compile on Linux:
-
-
+Tested on Ubuntu & Raspberry Pi OS, please substitue your package manager of choice :)
+```
+sudo apt install libglfw3-dev libxinerama-dev libxcursor-dev 
+sudo apt install cmake 
+```
 
 ## Controls:
 
