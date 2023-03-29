@@ -2,8 +2,8 @@
 #include <algorithm>
 
 #include "generators.hpp"
-#include "inputs.hpp"
 #include "outputs.hpp"
+#include "inputs.hpp"
 #include "tris.hpp"
 #include "world.hpp"
 

@@ -36,7 +36,7 @@ elseif(WIN32)
     )
 endif()
 
-add_executable(main source/main.cpp source/world.cpp source/generators.cpp source/inputs.cpp source/outputs.cpp source/tris.cpp ${GLAD_SOURCE})
+add_executable(main source/main.cpp source/world.cpp source/generators.cpp source/outputs.cpp source/inputs.cpp source/tris.cpp ${GLAD_SOURCE})
 target_link_libraries(main glfw OpenGL::GL)
 
 if(UNIX AND NOT APPLE)

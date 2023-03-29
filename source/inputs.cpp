@@ -82,7 +82,7 @@ void Inputs::evaluateCursor() {
     fracZ = modf(stepZ, &intpart);
 
     if (fracX == 0 && dx != 0) {
-      toXedge = 1 / abs(dx);
+      toXedge = abs(1 / dx);
     } else {
       if (dx > 0) {
         toXedge = (1 - fracX) / dx;
@@ -92,7 +92,7 @@ void Inputs::evaluateCursor() {
     }
 
     if (fracY == 0 && dy != 0) {
-      toYedge = 1 / abs(dy);
+      toYedge = abs(1 / dy);
     } else {
       if (dy > 0) {
         toYedge = (1 - fracY) / dy;
@@ -102,7 +102,7 @@ void Inputs::evaluateCursor() {
     }
 
     if (fracZ == 0 && dz != 0) {
-      toZedge = 1 / abs(dz);
+      toZedge = abs(1 / dz);
     } else {
       if (dz > 0) {
         toZedge = (1 - fracZ) / dz;
