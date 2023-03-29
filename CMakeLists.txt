@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
 project(MyOpenGLProject)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build." FORCE)
+set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release")
+
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(glfw3 REQUIRED)
