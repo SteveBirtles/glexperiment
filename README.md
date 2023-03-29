@@ -16,22 +16,32 @@ cd build
 cmake -G "MinGW Makefiles" -Dglfw3_DIR=/path/to/compiled/glfw3/lib/cmake/glfw3/ ..
 mingw32-make
 cd ..
+makesir saves
 build/main.exe
 ```
 
 ## To compile on Linux:
-Tested on Ubuntu & Raspberry Pi OS, please substitue your package manager of choice :)
+Tested on Ubuntu & Raspberry Pi OS, please substitute your package manager of choice :)
 ```
-sudo apt install libglfw3-dev libxinerama-dev libxcursor-dev 
-sudo apt install cmake 
+sudo apt install cmake libxcursor-dev libx11-dev libxrandr-dev libxinerama-dev libxi-dev freeglut3-dev 
+git clone https://github.com/glfw/glfw
+cd glfw
+mkdir build
+cd build
+cmake ..
+cmake --build .
+sudo make install
 ```
-### Compile and run:
+### Clone, compile and run:
 ```
+https://github.com/SteveBirtles/glexperiment
+cd glexperiment
 mkdir build
 cd build
 cmake ..
 cmake --build .
 cd ..
+mkdir saves
 build/main
 ```
 
@@ -43,13 +53,14 @@ brew install gcc
 brew install cmake
 brew install glfw
 ```
-### Compile and run:
+### Clone, compile and run:
 ```
 mkdir build
 cd build
 cmake ..
 cmake --build .
 cd ..
+mkdir saves
 build/main
 ```
 
