@@ -1,4 +1,4 @@
-#version 330 core
+#version 310 es
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec2 texCoordIn;
 layout(location = 2) in vec3 normal;
@@ -29,10 +29,10 @@ void main() {
 	if(!illuminate) {
 		light = 1.0;
 	} else {
-		light = 0.25 + max(0, abs(dot(normalize(centre - sun), normal))) * 0.75;
+		light = 0.25 + max(0.0, abs(dot(normalize(centre - sun), normal))) * 0.75;
 	}
 
-	if(positionDistanceSquared < 14400) {
+	if(positionDistanceSquared < 14400.0) {
 		fogFactor = 1.0;
 	} else {
 		fogFactor = clamp((128.0 - sqrt(positionDistanceSquared)) / 8.0, 0.0, 1.0);

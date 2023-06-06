@@ -15,6 +15,8 @@
 #include "../libraries/imageloader.h"
 #endif
 
+bool ES_MODE = false; // false for Mac, Linux and Windows, true for Raspberry Pi
+
 GLFWwindow *Outputs::window;
 Shader *Outputs::mainShader;
 Shader *Outputs::hudShader;
@@ -32,6 +34,7 @@ void Outputs::bindVertexBuffer(int chunkX, int chunkZ) {
   for (int i = 0; i < 12; i++) {
     glBindBuffer(GL_ARRAY_BUFFER, VBO[chunkX][chunkZ][i]);
     glBufferData(GL_ARRAY_BUFFER,
+    
                  World::vertices[chunkX][chunkZ][i].size() * sizeof(float),
                  &World::vertices[chunkX][chunkZ][i].front(), GL_STATIC_DRAW);
   }
@@ -95,13 +98,18 @@ void Outputs::prepareTextures() {
 }
 
 void Outputs::prepareShaders() {
-  mainShader = new Shader("shaders/textured_vertex.glsl",
-                          "shaders/textured_fragment.glsl");
+
+  std::string glslExtension {ES_MODE ? ".es.glsl" : ".glsl"};
+
+  auto cString = [](std::string s){ return s.c_str(); };
+
+  mainShader = new Shader(cString("shaders/textured_vertex" + glslExtension),
+                          cString("shaders/textured_fragment" + glslExtension));
   mainShader->use();
   hudShader =
-      new Shader("shaders/hud_vertex.glsl", "shaders/white_fragment.glsl");
-  wireframeShader = new Shader("shaders/wireframe_vertex.glsl",
-                               "shaders/white_fragment.glsl");
+      new Shader(cString("shaders/hud_vertex" + glslExtension), cString("shaders/white_fragment" + glslExtension));
+  wireframeShader = new Shader(cString("shaders/wireframe_vertex" + glslExtension),
+                               cString("shaders/white_fragment" + glslExtension));
 }
 
 bool Outputs::initOpenGL() {
@@ -109,14 +117,19 @@ bool Outputs::initOpenGL() {
     std::cout << "Failed to initiate glfw." << std::endl;
     return false;
   }
+  
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+
+  if (ES_MODE) {
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+  } else {
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+  }
 
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   
-  glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-
   window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "GLFW Fun", NULL, NULL);
   if (window == NULL) {
     std::cout << "Failed to create GLFW window" << std::endl;
@@ -269,7 +282,7 @@ void Outputs::renderWorld() {
   int camChunkX = (int)(Outputs::cameraPos.x / chunkSize);
   int camChunkZ = (int)(Outputs::cameraPos.z / chunkSize);
 
-  Outputs::mainShader->setVec4("foogColour", 0.4f, 0.4f, 0.8f, 1.0f);
+  Outputs::mainShader->setVec4("fogColour", 0.4f, 0.4f, 0.8f, 1.0f);
 
   totalTris = 0;
   for (int i = 0; i < 12; i++) {
