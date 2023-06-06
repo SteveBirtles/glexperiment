@@ -30,17 +30,20 @@ unsigned int Outputs::cursorVAO, Outputs::cursorVBO;
 unsigned int Outputs::hudVAO, Outputs::hudVBO;
 unsigned int Outputs::wireframeVAO, Outputs::wireframeVBO;
 
-void Outputs::bindVertexBuffer(int chunkX, int chunkZ) {
-  for (int i = 0; i < 12; i++) {
+void Outputs::bindVertexBuffer(int chunkX, int chunkZ)
+{
+  for (int i = 0; i < 12; i++)
+  {
     glBindBuffer(GL_ARRAY_BUFFER, VBO[chunkX][chunkZ][i]);
     glBufferData(GL_ARRAY_BUFFER,
-    
+
                  World::vertices[chunkX][chunkZ][i].size() * sizeof(float),
                  &World::vertices[chunkX][chunkZ][i].front(), GL_STATIC_DRAW);
   }
 }
 
-void Outputs::prepareTextures() {
+void Outputs::prepareTextures()
+{
   std::string textureFile[16]{
       "cursor.png",
       "cursorCentre.png",
@@ -62,7 +65,8 @@ void Outputs::prepareTextures() {
 
   unsigned int textures[16];
 
-  for (int i = 0; i < 16; i++) {
+  for (int i = 0; i < 16; i++)
+  {
     int width, height, nrChannels;
 
     stbi_set_flip_vertically_on_load(true);
@@ -73,7 +77,8 @@ void Outputs::prepareTextures() {
     std::cout << textureFile[i] << ":" << width << " x " << height << " with "
               << nrChannels << " channels." << std::endl;
 
-    if (data) {
+    if (data)
+    {
       glGenTextures(1, &textures[i]);
 
       glActiveTexture(GL_TEXTURE0 + i);
@@ -89,49 +94,62 @@ void Outputs::prepareTextures() {
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
                    GL_UNSIGNED_BYTE, data);
       glGenerateMipmap(GL_TEXTURE_2D);
-
-    } else {
+    }
+    else
+    {
       std::cout << "Failed to load texture!" << std::endl;
     }
     stbi_image_free(data);
   }
 }
 
-void Outputs::prepareShaders() {
+void Outputs::prepareShaders()
+{
 
-  std::string glslExtension {ES_MODE ? ".es.glsl" : ".glsl"};
+  std::string glslExtension{ES_MODE ? ".es.glsl" : ".glsl"};
 
-  auto cString = [](std::string s){ return s.c_str(); };
+  auto mainShaderV = "shaders/textured_vertex" + glslExtension;
+  auto mainShaderF = "shaders/textured_fragment" + glslExtension;
+  mainShader = new Shader(mainShaderV.c_str(), mainShaderF.c_str());
 
-  mainShader = new Shader(cString("shaders/textured_vertex" + glslExtension),
-                          cString("shaders/textured_fragment" + glslExtension));
   mainShader->use();
-  hudShader =
-      new Shader(cString("shaders/hud_vertex" + glslExtension), cString("shaders/white_fragment" + glslExtension));
-  wireframeShader = new Shader(cString("shaders/wireframe_vertex" + glslExtension),
-                               cString("shaders/white_fragment" + glslExtension));
+
+  auto hudShaderV = "shaders/hud_vertex" + glslExtension;
+  auto hudShaderF = "shaders/white_fragment" + glslExtension;
+
+  hudShader = new Shader(hudShaderV.c_str(), hudShaderF.c_str());
+
+  auto wireframeShaderV = "shaders/wireframe_vertex" + glslExtension;
+  auto wireframeShaderF = "shaders/white_fragment" + glslExtension;
+  wireframeShader = new Shader(wireframeShaderV.c_str(), wireframeShaderF.c_str());
 }
 
-bool Outputs::initOpenGL() {
-  if (!glfwInit()) {
+bool Outputs::initOpenGL()
+{
+  if (!glfwInit())
+  {
     std::cout << "Failed to initiate glfw." << std::endl;
     return false;
   }
-  
+
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 
-  if (ES_MODE) {
+  if (ES_MODE)
+  {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-  } else {
+  }
+  else
+  {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
   }
 
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  
+
   window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "GLFW Fun", NULL, NULL);
-  if (window == NULL) {
+  if (window == NULL)
+  {
     std::cout << "Failed to create GLFW window" << std::endl;
     glfwTerminate();
     return false;
@@ -144,7 +162,8 @@ bool Outputs::initOpenGL() {
 
   glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-  if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+  if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+  {
     std::cout << "Failed to initialize GLAD" << std::endl;
     return false;
   }
@@ -152,7 +171,8 @@ bool Outputs::initOpenGL() {
 }
 
 void Outputs::createVertexBuffer(unsigned int &vao, unsigned int &vbo,
-                        bool extended) {
+                                 bool extended)
+{
   glGenVertexArrays(1, &vao);
   glBindVertexArray(vao);
 
@@ -164,7 +184,8 @@ void Outputs::createVertexBuffer(unsigned int &vao, unsigned int &vbo,
                         (extended ? Outputs::vertexStride : 3) * sizeof(float),
                         (void *)0);
 
-  if (extended) {
+  if (extended)
+  {
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,
                           Outputs::vertexStride * sizeof(float),
@@ -187,10 +208,14 @@ void Outputs::createVertexBuffer(unsigned int &vao, unsigned int &vbo,
   }
 }
 
-void Outputs::prepareBuffers() {
-  for (int chunkX = 0; chunkX < World::CHUNKS; chunkX++) {
-    for (int chunkZ = 0; chunkZ < World::CHUNKS; chunkZ++) {
-      for (int i = 0; i < 12; i++) {
+void Outputs::prepareBuffers()
+{
+  for (int chunkX = 0; chunkX < World::CHUNKS; chunkX++)
+  {
+    for (int chunkZ = 0; chunkZ < World::CHUNKS; chunkZ++)
+    {
+      for (int i = 0; i < 12; i++)
+      {
         createVertexBuffer(VAO[chunkX][chunkZ][i], VBO[chunkX][chunkZ][i]);
       }
     }
@@ -210,7 +235,7 @@ void Outputs::prepareBuffers() {
                                  50.0 / (float)SCR_HEIGHT};
 #else
   std::vector<float> hudVertices{
-      -50.0 / (float)SCR_WIDTH,  0, 50.0 / (float)SCR_WIDTH, 0, 0,
+      -50.0 / (float)SCR_WIDTH, 0, 50.0 / (float)SCR_WIDTH, 0, 0,
       -50.0 / (float)SCR_HEIGHT, 0, 50.0 / (float)SCR_HEIGHT};
 #endif
 
@@ -227,7 +252,8 @@ void Outputs::prepareBuffers() {
                hudVertices.data(), GL_STATIC_DRAW);
 }
 
-void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
+void framebuffer_size_callback(GLFWwindow *window, int width, int height)
+{
   glViewport(0, 0, width, height);
 }
 
@@ -241,7 +267,8 @@ int Outputs::frames = 0;
 int Outputs::fps = 0;
 int Outputs::totalTris = 0;
 
-void Outputs::renderWorld() {
+void Outputs::renderWorld()
+{
   glClearColor(0.4f, 0.4f, 0.8f, 1.0f);
 
   glEnable(GL_DEPTH_TEST);
@@ -255,15 +282,15 @@ void Outputs::renderWorld() {
 
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-#if __APPLE__
-  glm::mat4 projection = glm::perspective(
-      glm::radians(Inputs::fov), (float)(SCR_WIDTH * 1.25) / (float)SCR_HEIGHT,
-      0.1f, 10000.0f);
-#else
+  // #if __APPLE__
+  //   glm::mat4 projection = glm::perspective(
+  //       glm::radians(Inputs::fov), (float)(SCR_WIDTH * 1.25) / (float)SCR_HEIGHT,
+  //       0.1f, 10000.0f);
+  // #else
   glm::mat4 projection = glm::perspective(
       glm::radians(Inputs::fov),
       (float)Outputs::SCR_WIDTH / (float)Outputs::SCR_HEIGHT, 0.1f, 10000.0f);
-#endif
+  // #endif
 
   Outputs::mainShader->setMat4("projection", projection);
 
@@ -285,10 +312,13 @@ void Outputs::renderWorld() {
   Outputs::mainShader->setVec4("fogColour", 0.4f, 0.4f, 0.8f, 1.0f);
 
   totalTris = 0;
-  for (int i = 0; i < 12; i++) {
+  for (int i = 0; i < 12; i++)
+  {
     Outputs::mainShader->setInt("textureNo", i + Inputs::FIRST_TEXTURE);
-    for (int chunkX = 0; chunkX < World::CHUNKS; chunkX++) {
-      for (int chunkZ = 0; chunkZ < World::CHUNKS; chunkZ++) {
+    for (int chunkX = 0; chunkX < World::CHUNKS; chunkX++)
+    {
+      for (int chunkZ = 0; chunkZ < World::CHUNKS; chunkZ++)
+      {
         if (std::abs(chunkX - camChunkX) > Outputs::RENDER_DISTANCE ||
             std::abs(chunkZ - camChunkZ) > Outputs::RENDER_DISTANCE)
           continue;
@@ -304,7 +334,8 @@ void Outputs::renderWorld() {
   }
 
   if (Inputs::cursorSide != -1 &&
-      glfwGetKey(Outputs::window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+      glfwGetKey(Outputs::window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+  {
     glm::mat4 cursorModel = glm::mat4(1.0f);
     Outputs::mainShader->setMat4("model", cursorModel);
     Outputs::mainShader->setBool("illuminate", false);
@@ -319,14 +350,16 @@ void Outputs::renderWorld() {
             ? 255
             : 0;
 
-    for (auto t = 0; t < Tris::shapes[s].size(); t++) {
+    for (auto t = 0; t < Tris::shapes[s].size(); t++)
+    {
       Outputs::cursorVertices.clear();
 
       auto triId = Tris::shapes[s][t];
 
       auto skip = false;
 
-      if (triId < 24) {
+      if (triId < 24)
+      {
         auto adjacentTriVector = Tris::adjacents[triId];
         auto dx = -adjacentTriVector.x;
         auto dy = -adjacentTriVector.y;
@@ -338,12 +371,15 @@ void Outputs::renderWorld() {
             Inputs::cursorY + dy >= 0 &&
             Inputs::cursorY + dy < World::MAP_SIZE &&
             Inputs::cursorZ + dz >= 0 &&
-            Inputs::cursorZ + dz < World::MAP_SIZE) {
+            Inputs::cursorZ + dz < World::MAP_SIZE)
+        {
           auto adjacentShape =
               World::voxels[Inputs::cursorX + dx][Inputs::cursorY + dy]
                            [Inputs::cursorZ + dz];
-          for (auto t2 = 0; t2 < Tris::shapes[adjacentShape].size(); t2++) {
-            if (Tris::shapes[adjacentShape][t2] == adjacentTri) {
+          for (auto t2 = 0; t2 < Tris::shapes[adjacentShape].size(); t2++)
+          {
+            if (Tris::shapes[adjacentShape][t2] == adjacentTri)
+            {
               skip = true;
               break;
             }
@@ -351,34 +387,43 @@ void Outputs::renderWorld() {
         }
       }
 
-      if (skip) continue;
+      if (skip)
+        continue;
 
       auto mainSide = true;
 
-      switch (Inputs::cursorSide) {
-        case 0:  //"North"
-          if (!(triId >= 16 && triId <= 19)) mainSide = false;
-          break;
-        case 1:  //"South"
-          if (!(triId >= 8 && triId <= 11)) mainSide = false;
-          break;
-        case 2:  //"Bottom"
-          if (!(triId >= 0 && triId <= 3)) mainSide = false;
-          break;
-        case 3:  //"Top"
-          if (!(triId >= 20 && triId <= 23)) mainSide = false;
-          break;
-        case 4:  //"East"
-          if (!(triId >= 4 && triId <= 7)) mainSide = false;
-          break;
-        case 5:  //"West"
-          if (!(triId >= 12 && triId <= 15)) mainSide = false;
-          break;
+      switch (Inputs::cursorSide)
+      {
+      case 0: //"North"
+        if (!(triId >= 16 && triId <= 19))
+          mainSide = false;
+        break;
+      case 1: //"South"
+        if (!(triId >= 8 && triId <= 11))
+          mainSide = false;
+        break;
+      case 2: //"Bottom"
+        if (!(triId >= 0 && triId <= 3))
+          mainSide = false;
+        break;
+      case 3: //"Top"
+        if (!(triId >= 20 && triId <= 23))
+          mainSide = false;
+        break;
+      case 4: //"East"
+        if (!(triId >= 4 && triId <= 7))
+          mainSide = false;
+        break;
+      case 5: //"West"
+        if (!(triId >= 12 && triId <= 15))
+          mainSide = false;
+        break;
       }
 
       auto prototype = Tris::prototypes[triId];
       auto tri = Tris(prototype, Tris::textures[triId]);
-      for (auto v = 0; v < 3; v++) {
+      for (auto v = 0; v < 3; v++)
+      {
         Outputs::cursorVertices.push_back(tri.xyz[v].x + Inputs::cursorX);
         Outputs::cursorVertices.push_back(tri.xyz[v].y + Inputs::cursorY);
         Outputs::cursorVertices.push_back(tri.xyz[v].z + Inputs::cursorZ);
@@ -386,16 +431,23 @@ void Outputs::renderWorld() {
         float p = tri.uv[v].x, q = tri.uv[v].y;
         float x, y;
 
-        if (Inputs::cursorCorner == 0 || Inputs::cursorEdge == 2) {
+        if (Inputs::cursorCorner == 0 || Inputs::cursorEdge == 2)
+        {
           x = -p;
           y = -q;
-        } else if (Inputs::cursorCorner == 1 || Inputs::cursorEdge == 1) {
+        }
+        else if (Inputs::cursorCorner == 1 || Inputs::cursorEdge == 1)
+        {
           x = q;
           y = -p;
-        } else if (Inputs::cursorCorner == 2 || Inputs::cursorEdge == 0) {
+        }
+        else if (Inputs::cursorCorner == 2 || Inputs::cursorEdge == 0)
+        {
           x = -q;
           y = p;
-        } else {  // cursorCorner == 3 || cursorEdge == 3
+        }
+        else
+        { // cursorCorner == 3 || cursorEdge == 3
           x = p;
           y = q;
         }
@@ -420,13 +472,20 @@ void Outputs::renderWorld() {
                    Outputs::cursorVertices.size() * sizeof(float),
                    &Outputs::cursorVertices.front(), GL_STATIC_DRAW);
 
-      if (!mainSide) {
+      if (!mainSide)
+      {
         Outputs::mainShader->setInt("textureNo", 0);
-      } else if (Inputs::cursorCorner >= 0) {
+      }
+      else if (Inputs::cursorCorner >= 0)
+      {
         Outputs::mainShader->setInt("textureNo", 2);
-      } else if (Inputs::cursorEdge >= 0) {
+      }
+      else if (Inputs::cursorEdge >= 0)
+      {
         Outputs::mainShader->setInt("textureNo", 3);
-      } else {
+      }
+      else
+      {
         Outputs::mainShader->setInt("textureNo", 1);
       }
 
@@ -438,7 +497,8 @@ void Outputs::renderWorld() {
 
   glDisable(GL_CULL_FACE);
 
-  if (Inputs::cursorSide != -1) {
+  if (Inputs::cursorSide != -1)
+  {
     Outputs::wireframeShader->use();
 
     Outputs::wireframeShader->setMat4("projection", projection);

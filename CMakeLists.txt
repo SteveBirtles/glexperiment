@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(MyOpenGLProject)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    add_compile_options(-Wno-volatile)
+    add_compile_options(-Wno-deprecated-volatile)
 endif()
 
 set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build." FORCE)
@@ -21,9 +21,9 @@ if(APPLE)
     include_directories(
         ${OPENGL_INCLUDE_DIR}
         /opt/homebrew/include
-        ${GLAD_INCLUDE_DIR}
+        ${GLAD_INCLUDE_DIR}        
     )
-    link_directories(/opt/homebrew/lib)
+    link_directories(/opt/homebrew/lib)    
 elseif(UNIX AND NOT APPLE)
     include_directories(
         ${OPENGL_INCLUDE_DIR}
