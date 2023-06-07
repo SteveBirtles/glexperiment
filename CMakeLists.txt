@@ -36,6 +36,13 @@ elseif(WIN32)
     )
 endif()
 
+if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "armv7l|aarch64") 
+    add_compile_definitions(ES_MODE=true)
+else()
+    add_compile_definitions(ES_MODE=false)
+endif()
+
+
 add_executable(main source/main.cpp source/world.cpp source/generators.cpp source/outputs.cpp source/inputs.cpp source/tris.cpp ${GLAD_SOURCE})
 target_link_libraries(main glfw OpenGL::GL)
 

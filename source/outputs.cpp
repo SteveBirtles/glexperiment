@@ -15,8 +15,6 @@
 #include "../libraries/imageloader.h"
 #endif
 
-bool ES_MODE = false; // false for Mac, Linux and Windows, true for Raspberry Pi
-
 GLFWwindow *Outputs::window;
 Shader *Outputs::mainShader;
 Shader *Outputs::hudShader;
@@ -106,7 +104,11 @@ void Outputs::prepareTextures()
 void Outputs::prepareShaders()
 {
 
-  std::string glslExtension{ES_MODE ? ".es.glsl" : ".glsl"};
+  #ifdef ES_MODE
+  std::string glslExtension{".es.glsl"};
+  #else
+  std::string glslExtension{".glsl"};
+  #endif
 
   auto mainShaderV = "shaders/textured_vertex" + glslExtension;
   auto mainShaderF = "shaders/textured_fragment" + glslExtension;
@@ -134,15 +136,12 @@ bool Outputs::initOpenGL()
 
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 
-  if (ES_MODE)
-  {
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-  }
-  else
-  {
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-  }
+  #ifdef ES_MODE
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+  glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+  #else
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+  #endif
 
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
