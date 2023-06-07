@@ -29,6 +29,9 @@ elseif(UNIX AND NOT APPLE)
         ${OPENGL_INCLUDE_DIR}
         ${GLAD_INCLUDE_DIR}
     )
+    if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "armv7l|aarch64") 
+        add_compile_definitions(ES_MODE)
+    endif()
 elseif(WIN32)
     include_directories(
         ${OPENGL_INCLUDE_DIR}
@@ -36,11 +39,6 @@ elseif(WIN32)
     )
 endif()
 
-if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "armv7l|aarch64") 
-    add_compile_definitions(ES_MODE=true)
-else()
-    add_compile_definitions(ES_MODE=false)
-endif()
 
 
 add_executable(main source/main.cpp source/world.cpp source/generators.cpp source/outputs.cpp source/inputs.cpp source/tris.cpp ${GLAD_SOURCE})
